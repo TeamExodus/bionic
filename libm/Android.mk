@@ -116,7 +116,6 @@ libm_common_src_files += \
     upstream-freebsd/lib/msun/src/s_fdim.c \
     upstream-freebsd/lib/msun/src/s_finite.c \
     upstream-freebsd/lib/msun/src/s_finitef.c \
-    upstream-freebsd/lib/msun/src/s_floor.c \
     upstream-freebsd/lib/msun/src/s_floorf.c \
     upstream-freebsd/lib/msun/src/s_fma.c \
     upstream-freebsd/lib/msun/src/s_fmaf.c \
@@ -232,7 +231,6 @@ libm_ld_src_files += \
     upstream-freebsd/lib/msun/ld128/s_nanl.c \
 
 # TODO: re-enable i387/e_sqrtf.S for x86, and maybe others.
-
 libm_common_cflags := \
     -DFLT_EVAL_METHOD=0 \
     -std=c99 \
@@ -244,6 +242,9 @@ libm_common_cflags := \
     -Wno-unknown-pragmas \
     -fvisibility=hidden \
 
+LOCAL_ASFLAGS := \
+    -Ibionic/libc \
+
 # Workaround the GCC "(long)fn -> lfn" optimization bug which will result in
 # self recursions for lrint, lrintf, and lrintl.
 # BUG: 14225968
@@ -252,13 +253,27 @@ libm_common_includes := $(LOCAL_PATH)/upstream-freebsd/lib/msun/src/
 
 libm_ld_includes := $(LOCAL_PATH)/upstream-freebsd/lib/msun/ld128/
 
+# s_floor.S requires neon instructions.
+ifdef TARGET_2ND_ARCH
+arch_variant := $(TARGET_2ND_ARCH_VARIANT)
+else
+arch_variant := $(TARGET_ARCH_VARIANT)
+endif
+
 ifeq ($(TARGET_USE_QCOM_BIONIC_OPTIMIZATION),true)
+  # Use the C version on armv7-a since it doesn't support neon instructions.
+  ifneq ($(arch_variant),armv7-a)
+    LOCAL_SRC_FILES_arm += arm/s_floor.S
+  endif
+
   libm_arm_src_files += \
     arm/e_pow.S \
     arm/s_cos.S \
     arm/s_sin.S \
     arm/e_sqrtf.S \
-    arm/e_sqrt.S
+    arm/e_sqrt.S \
+    upstream-freebsd/lib/msun/src/s_floor.c
+
   libm_arm_cflags += -DQCOM_NEON_OPTIMIZATION -fno-if-conversion
   libm_arm_includes += $(LOCAL_PATH)/../libc/
 
@@ -267,7 +282,8 @@ ifeq ($(TARGET_USE_QCOM_BIONIC_OPTIMIZATION),true)
     upstream-freebsd/lib/msun/src/s_cos.c \
     upstream-freebsd/lib/msun/src/s_sin.c \
     upstream-freebsd/lib/msun/src/e_sqrtf.c \
-    upstream-freebsd/lib/msun/src/e_sqrt.c
+    upstream-freebsd/lib/msun/src/e_sqrt.c \
+    upstream-freebsd/lib/msun/src/s_floor.c
 
   libm_arm64_cflags += -DQCOM_NEON_OPTIMIZATION
   libm_arm64_includes += $(LOCAL_PATH)/../libc/
