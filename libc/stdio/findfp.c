@@ -39,10 +39,7 @@
 #include <string.h>
 #include "local.h"
 #include "glue.h"
-#include "private/thread_private.h"
-
-#define ALIGNBYTES (sizeof(uintptr_t) - 1)
-#define ALIGN(p) (((uintptr_t)(p) + ALIGNBYTES) &~ ALIGNBYTES)
+#include "thread_private.h"
 
 #undef stdin
 #undef stdout
@@ -54,7 +51,9 @@ int	__sdidinit;
 
 #define	std(flags, file) \
 	{0,0,0,flags,file,{0},0,__sF+file,__sclose,__sread,__sseek,__swrite, \
-	    {(unsigned char *)(__sFext+file), 0},NULL,0,{0},{0},{0},0,0}
+	 {(unsigned char *)(__sFext+file), 0}}
+/*	 p r w flags file _bf z  cookie      close    read    seek    write 
+	 ext */
 
 				/* the usual - (stdin + stdout + stderr) */
 static FILE usual[FOPEN_MAX - 3];
@@ -63,7 +62,7 @@ static struct glue uglue = { 0, FOPEN_MAX - 3, usual };
 static struct glue *lastglue = &uglue;
 _THREAD_PRIVATE_MUTEX(__sfp_mutex);
 
-static struct __sfileext __sFext[3];
+struct __sfileext __sFext[3];
 FILE __sF[3] = {
 	std(__SRD, STDIN_FILENO),		/* stdin */
 	std(__SWR, STDOUT_FILENO),		/* stdout */
@@ -190,6 +189,10 @@ __sinit(void)
 	/* make sure we clean up on exit */
 	__atexit_register_cleanup(_cleanup); /* conservative */
 	__sdidinit = 1;
+<<<<<<< HEAD:libc/stdio/findfp.c
 
+=======
+out: 
+>>>>>>> c08c25b... Sync with upstream findfp.c.:libc/upstream-openbsd/lib/libc/stdio/findfp.c
 	_THREAD_PRIVATE_MUTEX_UNLOCK(__sinit_mutex);
 }
