@@ -14,8 +14,6 @@ libc_common_src_files_x86_64 := \
     upstream-freebsd/lib/libc/string/wcsrchr.c \
     upstream-freebsd/lib/libc/string/wmemcmp.c \
     upstream-freebsd/lib/libc/string/wmemmove.c \
-    upstream-openbsd/lib/libc/string/strlcat.c \
-    upstream-openbsd/lib/libc/string/strlcpy.c \
 
 # Fortify implementations of libc functions.
 libc_common_src_files_x86_64 += \
@@ -23,7 +21,6 @@ libc_common_src_files_x86_64 += \
     bionic/__memset_chk.cpp \
     bionic/__strcpy_chk.cpp \
     bionic/__strcat_chk.cpp \
-
 
 ##########################################
 ### CPU specific source files
@@ -46,6 +43,8 @@ libc_bionic_src_files_x86_64 += \
     arch-x86_64/string/sse2-stpncpy-slm.S \
     arch-x86_64/string/sse2-strcat-slm.S \
     arch-x86_64/string/sse2-strcpy-slm.S \
+    arch-x86_64/string/sse2-strlcat-slm.S \
+    arch-x86_64/string/sse2-strlcpy-slm.S \
     arch-x86_64/string/sse2-strlen-slm.S \
     arch-x86_64/string/sse2-strncat-slm.S \
     arch-x86_64/string/sse2-strncpy-slm.S \
