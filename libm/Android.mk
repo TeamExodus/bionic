@@ -233,6 +233,7 @@ LOCAL_ASFLAGS := \
     -Ibionic/libc \
 
 # Separate common instructions from those used in aarch64
+# TO DO: CEAN UP and bring inline with AOSP
 libm_common_standard_src_files := \
     upstream-freebsd/lib/msun/src/s_ceil.c \
     upstream-freebsd/lib/msun/src/s_ceilf.c \
@@ -247,6 +248,16 @@ libm_common_standard_src_files := \
     upstream-freebsd/lib/msun/src/s_rintf.c \
     upstream-freebsd/lib/msun/src/s_trunc.c \
     upstream-freebsd/lib/msun/src/s_truncf.c
+
+libm_common_x86_src_files := \
+    upstream-freebsd/lib/msun/src/s_fma.c \
+    upstream-freebsd/lib/msun/src/s_fmaf.c \
+    upstream-freebsd/lib/msun/src/s_llrint.c \
+    upstream-freebsd/lib/msun/src/s_llrintf.c \
+    upstream-freebsd/lib/msun/src/s_lrint.c \
+    upstream-freebsd/lib/msun/src/s_lrintf.c \
+    upstream-freebsd/lib/msun/src/s_rint.c \
+    upstream-freebsd/lib/msun/src/s_rintf.c \
 
 # Use aarch64 instructions where possible.  This will need to be inlined with AOSP at some point
 # but we will keep it here to preserve optimizations already in place.
@@ -337,10 +348,40 @@ LOCAL_SRC_FILES_arm64 += arm64/fenv.c \
     $(libm_arm64_src_files)
 
 LOCAL_C_INCLUDES_x86 := $(LOCAL_PATH)/i387
-LOCAL_SRC_FILES_x86 := i387/fenv.c $(libm_common_standard_src_files)
+LOCAL_SRC_FILES_x86 := \
+    i387/fenv.c \
+    $(libm_common_x86_src_files) \
+    x86/sqrt.S \
+    x86/sqrtf.S \
+      
+ifeq ($(ARCH_X86_HAVE_SSE4_1),true)
+LOCAL_SRC_FILES_x86 += \
+    x86/ceil.S \
+    x86/ceilf.S \
+    x86/floor.S \
+    x86/floorf.S \
+    x86/trunc.S \
+    x86/truncf.S \
+
+endif
 
 LOCAL_C_INCLUDES_x86_64 := $(libm_ld_includes)
-LOCAL_SRC_FILES_x86_64 := amd64/fenv.c $(libm_ld_src_files) $(libm_common_standard_src_files)
+LOCAL_SRC_FILES_x86_64 := amd64/fenv.c \
+    $(libm_ld_src_files) \
+    $(libm_common_standard_src_files) \
+    x86/sqrt.S \
+    x86/sqrtf.S \
+    
+ifeq ($(ARCH_X86_HAVE_SSE4_1),true)
+LOCAL_SRC_FILES_x86_64 += \
+    x86_64/ceil.S \
+    x86_64/ceilf.S \
+    x86_64/floor.S \
+    x86_64/floorf.S \
+    x86_64/trunc.S \
+    x86_64/truncf.S \
+    
+endif
 
 LOCAL_SRC_FILES_mips := mips/fenv.c
 
