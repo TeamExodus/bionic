@@ -291,6 +291,8 @@ LOCAL_C_INCLUDES += $(libm_common_includes)
 LOCAL_SRC_FILES := $(libm_common_src_files)
 LOCAL_SYSTEM_SHARED_LIBRARIES := libc
 
+LOCAL_ADDRESS_SANITIZER := false
+
 # arch-specific settings
 LOCAL_CFLAGS_arm := $(libm_arm_cflags)
 LOCAL_C_INCLUDES_arm := $(LOCAL_PATH)/arm $(libm_arm_includes)
@@ -321,6 +323,11 @@ LOCAL_MODULE:= libm
 LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
 LOCAL_SYSTEM_SHARED_LIBRARIES := libc
 LOCAL_WHOLE_STATIC_LIBRARIES := libm
+
+
+LOCAL_ADDRESS_SANITIZER := false
+
+LOCAL_CXX_STL := none
 
 # We'd really like to do this for all architectures, but since this wasn't done
 # before, these symbols must continue to be exported on LP32 for binary
