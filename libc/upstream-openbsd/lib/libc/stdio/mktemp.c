@@ -1,4 +1,4 @@
-/*	$OpenBSD: mktemp.c,v 1.33 2014/05/06 22:55:27 millert Exp $ */
+/*	$OpenBSD: mktemp.c,v 1.35 2014/10/31 15:54:14 millert Exp $ */
 /*
  * Copyright (c) 1996-1998, 2008 Theo de Raadt
  * Copyright (c) 1997, 2008-2009 Todd C. Miller
@@ -43,7 +43,7 @@ static int
 mktemp_internal(char *path, int slen, int mode)
 {
 	char *start, *cp, *ep;
-	const char *tempchars = TEMPCHARS;
+	const char tempchars[] = TEMPCHARS;
 	unsigned int tries;
 	struct stat sb;
 	size_t len;
