@@ -29,7 +29,7 @@
  */
 
 #include <float.h>
-#include <bionic_asm.h>
+#include <master_bionic_asm.h>
 
 ENTRY(floor)
     frintm      d0, d0
