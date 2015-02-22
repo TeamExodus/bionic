@@ -84,8 +84,6 @@ libm_common_src_files += \
     upstream-freebsd/lib/msun/src/s_cbrtf.c \
     upstream-freebsd/lib/msun/src/s_ccosh.c \
     upstream-freebsd/lib/msun/src/s_ccoshf.c \
-    upstream-freebsd/lib/msun/src/s_ceil.c \
-    upstream-freebsd/lib/msun/src/s_ceilf.c \
     upstream-freebsd/lib/msun/src/s_cexp.c \
     upstream-freebsd/lib/msun/src/s_cexpf.c \
     upstream-freebsd/lib/msun/src/s_cimag.c \
@@ -116,7 +114,6 @@ libm_common_src_files += \
     upstream-freebsd/lib/msun/src/s_fdim.c \
     upstream-freebsd/lib/msun/src/s_finite.c \
     upstream-freebsd/lib/msun/src/s_finitef.c \
-    upstream-freebsd/lib/msun/src/s_floorf.c \
     upstream-freebsd/lib/msun/src/s_fma.c \
     upstream-freebsd/lib/msun/src/s_fmaf.c \
     upstream-freebsd/lib/msun/src/s_fmax.c \
@@ -171,10 +168,21 @@ libm_common_src_files += \
     upstream-freebsd/lib/msun/src/w_dremf.c
 
 libm_arch_src_files_default := \
-    upstream-freebsd/lib/msun/src/s_floor.c
-
+    upstream-freebsd/lib/msun/src/s_ceil.c \
+    upstream-freebsd/lib/msun/src/s_ceilf.c \
+    upstream-freebsd/lib/msun/src/s_floor.c \
+    upstream-freebsd/lib/msun/src/s_floorf.c
+    
 libm_arch_src_files_arm := \
     arm/s_floor.S
+
+libm_arch_src_files_arm64 := \
+    arm64/s_ceil.S \
+    arm64/s_ceilf.S \
+    arm64/s_floor.S \
+    arm64/s_floorf.S \
+    arm64/e_sqrt.S \
+    arm64/e_sqrtf.S
 
 libm_common_src_files += \
     fake_long_double.c \
@@ -271,7 +279,7 @@ else
       endif
     endif
   else
-    libm_common_src_files = $(libm_arch_src_files_default)
+    libm_common_src_files += $(libm_arch_src_files_default)
   endif
 endif
 
@@ -288,9 +296,13 @@ ifeq ($(TARGET_USE_QCOM_BIONIC_OPTIMIZATION),true)
   libm_arm64_src_files += \
     arm64/e_pow64.S \
     upstream-freebsd/lib/msun/src/s_cos.c \
-    upstream-freebsd/lib/msun/src/s_sin.c \
-    upstream-freebsd/lib/msun/src/e_sqrtf.c \
-    upstream-freebsd/lib/msun/src/e_sqrt.c
+    upstream-freebsd/lib/msun/src/s_sin.c
+  
+  ifneq ($(EXODUS_BIONIC_OPTIMIZATIONS)),true)
+    libm_arm64_src_files += \
+      upstream-freebsd/lib/msun/src/e_sqrtf.c \
+      upstream-freebsd/lib/msun/src/e_sqrt.c
+  endif
 
   libm_arm64_cflags += -DQCOM_NEON_OPTIMIZATION
   libm_arm64_includes += $(LOCAL_PATH)/../libc/
