@@ -242,7 +242,7 @@ libm_ld_src_files += \
 
 libm_common_cflags := \
     -DFLT_EVAL_METHOD=0 \
-    -std=c99 \
+    -std=gnu11 \
     -include $(LOCAL_PATH)/freebsd-compat.h \
     -Wno-missing-braces \
     -Wno-parentheses \
@@ -271,7 +271,7 @@ ifeq ($(BONE_STOCK),true)
     upstream-freebsd/lib/msun/src/e_sqrtf.c \
     upstream-freebsd/lib/msun/src/e_sqrt.c
 else
-  ifneq ($(EXODUS_BIONIC_OPTIMIZATIONS)),)
+  ifeq ($(EXODUS_BIONIC_OPTIMIZATIONS)),true)
     ifeq (generic, $(TARGET_CPU_VARIANT))
       libm_$(TARGET_ARCH)_src_files += $(libm_arch_src_files_default)
     else
