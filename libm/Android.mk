@@ -116,7 +116,6 @@ libm_common_src_files += \
     upstream-freebsd/lib/msun/src/s_fdim.c \
     upstream-freebsd/lib/msun/src/s_finite.c \
     upstream-freebsd/lib/msun/src/s_finitef.c \
-    upstream-freebsd/lib/msun/src/s_floor.c \
     upstream-freebsd/lib/msun/src/s_floorf.c \
     upstream-freebsd/lib/msun/src/s_fma.c \
     upstream-freebsd/lib/msun/src/s_fmaf.c \
@@ -170,6 +169,12 @@ libm_common_src_files += \
     upstream-freebsd/lib/msun/src/w_cabsf.c \
     upstream-freebsd/lib/msun/src/w_drem.c \
     upstream-freebsd/lib/msun/src/w_dremf.c
+
+libm_arch_src_files_default := \
+    upstream-freebsd/lib/msun/src/s_floor.c
+
+libm_arch_src_files_arm := \
+    arm/s_floor.S
 
 libm_common_src_files += \
     fake_long_double.c \
@@ -245,6 +250,30 @@ libm_common_cflags += -fno-builtin-rint -fno-builtin-rintf -fno-builtin-rintl
 libm_common_includes := $(LOCAL_PATH)/upstream-freebsd/lib/msun/src/
 
 libm_ld_includes := $(LOCAL_PATH)/upstream-freebsd/lib/msun/ld128/
+
+libm_common_asflags := -DFLT_EVAL_METHOD
+
+# Experimental libm bionic features from upstream
+ifeq ($(BONE_STOCK),true)
+  libm_common_src_files := $(libm_arch_src_files_default)
+else
+  ifneq ($(EXODUS_BIONIC_OPTIMIZATIONS)),)
+    ifeq (generic, $(TARGET_CPU_VARIANT))
+      libm_$(TARGET_ARCH)_src_files += $(libm_arch_src_files_default)
+    else
+      libm_$(TARGET_ARCH)_src_files += $(libm_arch_src_files_arm)
+    endif
+    ifdef TARGET_2ND_ARCH
+      ifeq (generic, $(TARGET_2ND_CPU_VARIANT))
+        libm_$(TARGET_2ND_ARCH)_src_files += $(libm_arch_src_files_default)
+      else
+        libm_$(TARGET_2ND_ARCH)_src_files += $(libm_arch_src_files_arm64)
+      endif
+    endif
+  else
+    libm_common_src_files = $(libm_arch_src_files_default)
+  endif
+endif
 
 ifeq ($(TARGET_USE_QCOM_BIONIC_OPTIMIZATION),true)
   libm_arm_src_files += \
