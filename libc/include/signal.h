@@ -32,7 +32,6 @@
 #include <errno.h>
 #include <sys/cdefs.h>
 #include <limits.h>		/* For LONG_BIT */
-#include <string.h>		/* For memset() */
 #include <sys/types.h>
 #if defined(__LP64__)
 #include <asm/sigcontext.h>

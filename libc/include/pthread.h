@@ -34,6 +34,7 @@
 #include <sched.h>
 #include <limits.h>
 #include <sys/types.h>
+#include <string.h>
 
 #if defined(__LP64__)
   #define __RESERVED_INITIALIZER , {0}

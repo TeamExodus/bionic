@@ -27,6 +27,7 @@
  */
 
 #include <signal.h>
+#include <string.h>
 
 int sigfillset(sigset_t* set) {
   if (set == NULL) {
