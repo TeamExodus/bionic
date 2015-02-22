@@ -524,7 +524,7 @@ ifeq ($(MALLOC_IMPL),dlmalloc)
   libc_common_cflags += -DUSE_DLMALLOC
   libc_malloc_src := bionic/dlmalloc.c
 else
-  if ($(EXODUS_BIONIC_OPTIMIZATIONS),true)
+  ifeq ($(EXODUS_BIONIC_OPTIMIZATIONS),true)
     libc_common_cflags += -DUSE_DLMALLOC
     libc_malloc_src := bionic/dlmalloc.c
   else
