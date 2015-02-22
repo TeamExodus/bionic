@@ -263,36 +263,34 @@ libm_common_includes := $(LOCAL_PATH)/upstream-freebsd/lib/msun/src/
 libm_ld_includes := $(LOCAL_PATH)/upstream-freebsd/lib/msun/ld128/
 
 # Experimental libm bionic features from upstream
+ifeq ($(EXODUS_BIONIC_OPTIMIZATIONS)),true)
+  ifeq (generic, $(TARGET_CPU_VARIANT))
+    libm_$(TARGET_ARCH)_src_files += $(libm_arch_src_files_default)
+  else
+    ifeq ($(ARCH_ARM_HAVE_NEON),true)
+      libm_$(TARGET_ARCH)_src_files += $(libm_arch_src_files_arm)
+    else
+      libm_$(TARGET_ARCH)_src_files += $(libm_arch_src_files_default)
+    endif
+  endif
+  ifdef TARGET_2ND_ARCH
+    ifeq (generic, $(TARGET_2ND_CPU_VARIANT))
+      libm_$(TARGET_2ND_ARCH)_src_files += $(libm_arch_src_files_default)
+    else
+      libm_$(TARGET_2ND_ARCH)_src_files += $(libm_arch_src_files_arm64)
+    endif
+  endif
+else
+  libm_common_src_files += $(libm_arch_src_files_default)
+endif
+
 ifeq ($(BONE_STOCK),true)
   libm_common_src_files += 
-    $(libm_arch_src_files_default) \
     upstream-freebsd/lib/msun/src/s_cos.c \
     upstream-freebsd/lib/msun/src/s_sin.c \
     upstream-freebsd/lib/msun/src/e_sqrtf.c \
     upstream-freebsd/lib/msun/src/e_sqrt.c
 else
-  ifeq ($(EXODUS_BIONIC_OPTIMIZATIONS)),true)
-    ifeq (generic, $(TARGET_CPU_VARIANT))
-      libm_$(TARGET_ARCH)_src_files += $(libm_arch_src_files_default)
-    else
-      # s_floor.S requires neon instructions
-      ifeq ($(ARCH_ARM_HAVE_NEON),true)
-        libm_$(TARGET_ARCH)_src_files += $(libm_arch_src_files_arm)
-      else
-        libm_$(TARGET_ARCH)_src_files += $(libm_arch_src_files_default)
-      endif
-    endif
-    ifdef TARGET_2ND_ARCH
-      ifeq (generic, $(TARGET_2ND_CPU_VARIANT))
-        libm_$(TARGET_2ND_ARCH)_src_files += $(libm_arch_src_files_default)
-      else
-        libm_$(TARGET_2ND_ARCH)_src_files += $(libm_arch_src_files_arm64)
-      endif
-    endif
-  else
-    libm_common_src_files += $(libm_arch_src_files_default)
-  endif
-
   ifeq ($(TARGET_USE_QCOM_BIONIC_OPTIMIZATION),true)
     libm_arm_src_files += \
       arm/e_pow.S \
