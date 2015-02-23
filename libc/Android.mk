@@ -524,14 +524,9 @@ ifeq ($(MALLOC_IMPL),dlmalloc)
   libc_common_cflags += -DUSE_DLMALLOC
   libc_malloc_src := bionic/dlmalloc.c
 else
-  ifeq ($(EXODUS_BIONIC_OPTIMIZATIONS),true)
-    libc_common_cflags += -DUSE_DLMALLOC
-    libc_malloc_src := bionic/dlmalloc.c
-  else
-    libc_common_cflags += -DUSE_JEMALLOC
-    libc_malloc_src := bionic/jemalloc_wrapper.cpp
-    libc_common_c_includes += external/jemalloc/include
-  endif
+  libc_common_cflags += -DUSE_JEMALLOC
+  libc_malloc_src := bionic/jemalloc_wrapper.cpp
+  libc_common_c_includes += external/jemalloc/include
 endif
 
 # To customize dlmalloc's alignment, set BOARD_MALLOC_ALIGNMENT in
