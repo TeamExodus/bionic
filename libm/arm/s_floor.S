@@ -30,7 +30,7 @@
  */
 
 #include <float.h>
-#include <bionic_asm.h>
+#include <private/bionic_asm.h>
 
 ENTRY(floor)    /* x in r0, r1 */
 
