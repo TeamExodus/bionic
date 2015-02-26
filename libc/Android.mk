@@ -503,11 +503,11 @@ libc_common_cflags := \
     -D_LIBC=1 \
     -Wall -Wextra -Wunused
 
-if ($(EXODUS_BIONIC_OPTIMIZATIONS),true)
+ifeq ($(EXODUS_BIONIC_OPTIMIZATIONS),true)
     libc_common_cflags += \
       -O2 \
       $(DEBUG_SYMBOL_FLAGS) \
-      $(NO_DEBUG_FRAME_POINTERS)
+      $(DEBUG_FRAME_POINTER_FLAGS)
 endif
 
 ifneq ($(TARGET_USES_LOGD),false)

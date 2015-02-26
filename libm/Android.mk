@@ -251,11 +251,11 @@ libm_common_cflags := \
     -Wno-unknown-pragmas \
     -fvisibility=hidden
 
-if ($(EXODUS_BIONIC_OPTIMIZATIONS),true)
+ifeq ($(EXODUS_BIONIC_OPTIMIZATIONS),true)
     libm_common_cflags += \
       -O2 \
       $(DEBUG_SYMBOL_FLAGS) \
-      $(NO_DEBUG_FRAME_POINTERS)
+      $(DEBUG_FRAME_POINTER_FLAGS)
 endif
 
 LOCAL_ASFLAGS := \
