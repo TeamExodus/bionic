@@ -501,7 +501,14 @@ libc_arch_static_src_files := \
 # ========================================================
 libc_common_cflags := \
     -D_LIBC=1 \
-    -Wall -Wextra -Wunused \
+    -Wall -Wextra -Wunused
+
+if ($(EXODUS_BIONIC_OPTIMIZATIONS),true)
+    libc_common_cflags += \
+      -O2 \
+      $(DEBUG_SYMBOL_FLAGS) \
+      $(NO_DEBUG_FRAME_POINTERS)
+endif
 
 ifneq ($(TARGET_USES_LOGD),false)
 libc_common_cflags += -DTARGET_USES_LOGD

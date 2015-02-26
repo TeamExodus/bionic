@@ -249,7 +249,14 @@ libm_common_cflags := \
     -Wno-sign-compare \
     -Wno-uninitialized \
     -Wno-unknown-pragmas \
-    -fvisibility=hidden \
+    -fvisibility=hidden
+
+if ($(EXODUS_BIONIC_OPTIMIZATIONS),true)
+    libm_common_cflags += \
+      -O2 \
+      $(DEBUG_SYMBOL_FLAGS) \
+      $(NO_DEBUG_FRAME_POINTERS)
+endif
 
 LOCAL_ASFLAGS := \
     -Ibionic/libc \
