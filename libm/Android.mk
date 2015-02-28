@@ -253,9 +253,7 @@ libm_common_cflags := \
 
 ifeq ($(EXODUS_BIONIC_OPTIMIZATIONS),true)
     libm_common_cflags += \
-      -O2 \
-      $(DEBUG_SYMBOL_FLAGS) \
-      $(DEBUG_FRAME_POINTER_FLAGS)
+      -O1
 endif
 
 LOCAL_ASFLAGS := \

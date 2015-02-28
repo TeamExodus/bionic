@@ -506,6 +506,7 @@ libc_common_cflags := \
 ifeq ($(EXODUS_BIONIC_OPTIMIZATIONS),true)
     libc_common_cflags += \
       -O2 \
+      $(EXODUS_FSTRICT_OPTIONS) \
       $(DEBUG_SYMBOL_FLAGS) \
       $(DEBUG_FRAME_POINTER_FLAGS)
 endif
