@@ -755,10 +755,7 @@ endif
 
 LOCAL_CFLAGS := \
     $(libc_common_cflags) \
-    -Wno-missing-field-initializers \
-    -Wno-sign-compare \
-    -Wno-uninitialized \
-    -Wno-unused-parameter \
+    -Wno-sign-compare -Wno-uninitialized -Wno-unused-parameter \
     -I$(LOCAL_PATH)/private \
     -I$(LOCAL_PATH)/upstream-openbsd/android/include \
     -I$(LOCAL_PATH)/upstream-openbsd/lib/libc/include \
