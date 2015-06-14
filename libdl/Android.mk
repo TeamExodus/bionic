@@ -37,8 +37,6 @@ LOCAL_SYSTEM_SHARED_LIBRARIES :=
 
 LOCAL_ADDRESS_SANITIZER := false
 include $(BUILD_SHARED_LIBRARY)
-<<<<<<< HEAD
-=======
 
 # A dummy libdl.a. Need for static executables using the LLVM unwinder. Most
 # functions default to failure, others use a sensible default (dl_iterate_phdr()
@@ -52,4 +50,3 @@ LOCAL_MODULE := libdl
 LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
 LOCAL_ADDRESS_SANITIZER := false
 include $(BUILD_STATIC_LIBRARY)
->>>>>>> da19478... Disable ASAN for more of our libraries.
