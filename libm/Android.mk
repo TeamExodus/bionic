@@ -301,7 +301,10 @@ ifeq ($(TARGET_USE_QCOM_BIONIC_OPTIMIZATION),true)
 else
   libm_common_src_files += \
     upstream-freebsd/lib/msun/src/s_cos.c \
-    upstream-freebsd/lib/msun/src/s_sin.c
+    upstream-freebsd/lib/msun/src/s_sin.c 
+	
+  libm_arm_src_files += \
+    upstream-freebsd/lib/msun/src/s_floor.c
 
   libm_common_standard_src_files += \
     upstream-freebsd/lib/msun/src/e_sqrtf.c \
