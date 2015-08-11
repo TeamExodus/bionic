@@ -303,7 +303,7 @@ else
     upstream-freebsd/lib/msun/src/s_cos.c \
     upstream-freebsd/lib/msun/src/s_sin.c
 
-  libm_common_standard_src_files +=
+  libm_common_standard_src_files += \
     upstream-freebsd/lib/msun/src/e_sqrtf.c \
     upstream-freebsd/lib/msun/src/e_sqrt.c
 endif
