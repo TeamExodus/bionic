@@ -228,6 +228,10 @@ libm_common_cflags := \
     -Wno-uninitialized \
     -Wno-unknown-pragmas \
     -fvisibility=hidden \
+    -O2 \
+    -DNDEBUG \
+    -g0 \
+    -fomit-frame-pointer \
 
 LOCAL_ASFLAGS := \
     -Ibionic/libc \

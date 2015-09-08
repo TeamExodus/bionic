@@ -553,11 +553,19 @@ endif
 
 # Define some common conlyflags
 libc_common_conlyflags := \
-    -std=gnu99
+    -std=gnu99 \
+    -O2 \
+    -DNDEBUG \
+    -g0 \
+    -fomit-frame-pointer \
 
 # Define some common cppflags
 libc_common_cppflags := \
-    -std=gnu++11
+    -std=gnu++11 \
+    -O2 \
+    -DNDEBUG \
+    -g0 \
+    -fomit-frame-pointer \
 
 # Define some common includes
 # ========================================================
