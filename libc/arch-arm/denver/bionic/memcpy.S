@@ -61,6 +61,7 @@
         .text
         .syntax unified
         .fpu    neon
+        .cpu    cortex-a15
 
 ENTRY(__memcpy_chk)
         cmp     r2, r3

@@ -33,6 +33,7 @@
         .text
         .syntax unified
         .fpu    neon
+        .cpu    cortex-a15
 
 #define CACHE_LINE_SIZE         (64)
 #define MEMCPY_BLOCK_SIZE_SMALL (32768)
