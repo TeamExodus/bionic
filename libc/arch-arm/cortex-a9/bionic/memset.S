@@ -177,7 +177,7 @@ ENTRY_PRIVATE(__memset_large_copy)
         strcs       r1, [r0], #4
         strmih      r1, [r0], #2
         movs        r2, r2, lsl #2
-        strbcs      r1, [r0]
+        strcsb      r1, [r0]
         ldmfd       sp!, {r0, r4-r7, pc}
 END(__memset_large_copy)
 
