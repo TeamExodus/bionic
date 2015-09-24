@@ -27,7 +27,7 @@
  */
 
 #include <machine/cpu-features.h>
-#include <machine/asm.h>
+#include <private/bionic_asm.h>
 
 
 #ifdef HAVE_32_BYTE_CACHE_LINE
@@ -39,6 +39,8 @@
 /*
  * Optimized memcmp() for Cortex-A9.
  */
+
+.syntax unified
 
 ENTRY(memcmp)
         pld         [r0, #(CACHE_LINE_SIZE * 0)]
@@ -107,15 +109,17 @@ ENTRY(memcmp)
         bmi        10f
 #endif
 
-        .save {r4, lr}
         /* save registers */
         stmfd       sp!, {r4, lr}
+        .cfi_def_cfa_offset 8
+        .cfi_rel_offset r4, 0
+        .cfi_rel_offset lr, 4
 
         /* since r0 hold the result, move the first source
          * pointer somewhere else
          */
          mov        r4, r0
-        
+
         /* align first pointer to word boundary
          * offset = -src & 3
          */
@@ -151,7 +155,7 @@ ENTRY(memcmp)
         ldr         ip, [r1]
         subs        r2, r2, #(32 + 4)
         bmi         1f
-        
+
 0:      pld         [r4, #(CACHE_LINE_SIZE * 2)]
         pld         [r1, #(CACHE_LINE_SIZE * 2)]
         ldr         r0, [r4], #4
@@ -159,33 +163,33 @@ ENTRY(memcmp)
         eors        r0, r0, ip
         ldreq       r0, [r4], #4
         ldreq       ip, [r1, #4]!
-        eoreqs      r0, r0, lr
+        eorseq      r0, r0, lr
         ldreq       r0, [r4], #4
         ldreq       lr, [r1, #4]!
-        eoreqs      r0, r0, ip
+        eorseq      r0, r0, ip
         ldreq       r0, [r4], #4
         ldreq       ip, [r1, #4]!
-        eoreqs      r0, r0, lr
+        eorseq      r0, r0, lr
         ldreq       r0, [r4], #4
         ldreq       lr, [r1, #4]!
-        eoreqs      r0, r0, ip
+        eorseq      r0, r0, ip
         ldreq       r0, [r4], #4
         ldreq       ip, [r1, #4]!
-        eoreqs      r0, r0, lr
+        eorseq      r0, r0, lr
         ldreq       r0, [r4], #4
         ldreq       lr, [r1, #4]!
-        eoreqs      r0, r0, ip
+        eorseq      r0, r0, ip
         ldreq       r0, [r4], #4
         ldreq       ip, [r1, #4]!
-        eoreqs      r0, r0, lr
-        bne         2f        
+        eorseq      r0, r0, lr
+        bne         2f
         subs        r2, r2, #32
         bhs         0b
 
         /* do we have at least 4 bytes left? */
 1:      adds        r2, r2, #(32 - 4 + 4)
         bmi         4f
-        
+
         /* finish off 4 bytes at a time */
 3:      ldr         r0, [r4], #4
         ldr         ip, [r1], #4
@@ -217,8 +221,7 @@ ENTRY(memcmp)
         bne         8b
 
 9:      /* restore registers and return */
-        ldmfd       sp!, {r4, lr}
-        bx          lr
+        ldmfd       sp!, {r4, pc}
 
 10:     /* process less than 12 bytes */
         cmp         r2, #0
@@ -233,17 +236,14 @@ ENTRY(memcmp)
         subs        r2, r2, #1
         bne         11b
         bx          lr
-END(memcmp)
-
-
 
 5:      /*************** non-congruent case ***************/
-        and         r0, r1, #3      
+        and         r0, r1, #3
         cmp         r0, #2
         bne         4f
 
         /* here, offset is 2 (16-bits aligned, special cased) */
-        
+
         /* make sure we have at least 16 bytes to process */
         subs        r2, r2, #16
         addmi       r2, r2, #16
@@ -264,17 +264,17 @@ END(memcmp)
         ldreq       lr, [r1], #4
         ldreq       r0, [r4], #4
         orreq       ip, ip, lr, lsl #16
-        eoreqs      r0, r0, ip
+        eorseq      r0, r0, ip
         moveq       ip, lr, lsr #16
         ldreq       lr, [r1], #4
         ldreq       r0, [r4], #4
         orreq       ip, ip, lr, lsl #16
-        eoreqs      r0, r0, ip
+        eorseq      r0, r0, ip
         moveq       ip, lr, lsr #16
         ldreq       lr, [r1], #4
         ldreq       r0, [r4], #4
         orreq       ip, ip, lr, lsl #16
-        eoreqs      r0, r0, ip
+        eorseq      r0, r0, ip
         bne         7f
         subs        r2, r2, #16
         bhs         6b
@@ -318,7 +318,7 @@ END(memcmp)
         ldreq       r7, [r1], #4
         ldreq       r0, [r4], #4
         orreq       ip, ip, r7, lsl r6
-        eoreqs      r0, r0, ip
+        eorseq      r0, r0, ip
         bne         7f
         subs        r2, r2, #8
         bhs         6b
@@ -341,3 +341,4 @@ END(memcmp)
         mov         r2, #4
 		ldmfd		sp!, {r5, r6, r7}
         b           8b
+END(memcmp)
