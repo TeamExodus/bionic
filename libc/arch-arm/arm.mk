@@ -60,7 +60,7 @@ libc_bionic_src_files_arm += \
     arch-arm/bionic/_setjmp.S \
     arch-arm/bionic/setjmp.S \
     arch-arm/bionic/sigsetjmp.S \
-    arch-arm/bionic/syscall.S \
+    arch-arm/bionic/syscall.S
 
 libc_arch_static_src_files_arm := arch-arm/bionic/exidx_static.c
 libc_arch_dynamic_src_files_arm := arch-arm/bionic/exidx_dynamic.c
@@ -70,16 +70,19 @@ ifeq ($(strip $(TARGET_$(my_2nd_arch_prefix)CPU_VARIANT)),)
   $(warning TARGET_$(my_2nd_arch_prefix)ARCH is arm, but TARGET_$(my_2nd_arch_prefix)CPU_VARIANT is not defined)
 endif
 
-ifeq ($(filter cortex-a7 cortex-a9 cortex-a53 denver krait scorpion, $(strip $(TARGET_$(my_2nd_arch_prefix)CPU_VARIANT))),)
-libc_bionic_src_files_arm += \
-    upstream-openbsd/lib/libc/string/stpcpy.c
+//NEED TO verify does this stpcpy #TODO VERY IMPORTANT. suppressing to avoid duplication.
+ifneq (,$(filter cortex-a7 cortex-a9 cortex-a53 denver krait scorpion, $(strip $(TARGET_$(my_2nd_arch_prefix)CPU_VARIANT))))
+#libc_bionic_src_files_arm += \
+#    upstream-openbsd/lib/libc/string/stpcpy.c
 endif
 
-ifeq ($(filter cortex-a53 denver krait scorpion, $(strip $(TARGET_$(my_2nd_arch_prefix)CPU_VARIANT))),)
+$(warning TARGET_CPU_VARIANT is >> , $(filter cortex-a53 denver krait scorpion, $(strip $(TARGET_$(my_2nd_arch_prefix)CPU_VARIANT))))
+ifneq (,$(filter cortex-a53 denver krait scorpion, $(strip $(TARGET_$(my_2nd_arch_prefix)CPU_VARIANT))))
+ $(warning TARGET_CPU_VARIANT picked bcopy.c >> , $(TARGET_$(my_2nd_arch_prefix)CPU_VARIANT))
 libc_bionic_src_files_arm += \
     upstream-openbsd/lib/libc/string/bcopy.c
 endif
-
+ $(warning TARGET compiling following list for libc , $(libc_bionic_src_files_arm))
 cpu_variant_mk := $(LOCAL_PATH)/arch-arm/$(TARGET_$(my_2nd_arch_prefix)CPU_VARIANT)/$(TARGET_$(my_2nd_arch_prefix)CPU_VARIANT).mk
 ifeq ($(wildcard $(cpu_variant_mk)),)
 $(error "TARGET_$(my_2nd_arch_prefix)CPU_VARIANT not set or set to an unknown value. Possible values are cortex-a7, cortex-a8, cortex-a9, cortex-a15, krait, scorpion, denver. Use generic for devices that do not have a CPU similar to any of the supported cpu variants.")
