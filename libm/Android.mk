@@ -510,7 +510,8 @@ ifeq ($(USE_EXODUS_BIONIC_OPTS),true)
   libm_common_cflags := \
     -O3 \
     $(DEBUG_SYMBOL_FLAGS) \
-    $(DEBUG_FRAME_POINTER_FLAGS)
+    $(DEBUG_FRAME_POINTER_FLAGS) \
+    $(EXODUS_ARCH_VARIANT_CFLAGS)
 endif
 
 LOCAL_CFLAGS += $(libm_common_cflags)

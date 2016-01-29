@@ -579,7 +579,8 @@ ifeq ($(USE_EXODUS_BIONIC_OPTS),true)
   libc_common_cflags += \
     -O3 \
     $(DEBUG_SYMBOL_FLAGS) \
-    $(DEBUG_FRAME_POINTER_FLAGS)
+    $(DEBUG_FRAME_POINTER_FLAGS) \
+    $(EXODUS_ARCH_VARIANT_CFLAGS)
 endif
 
 ifneq ($(TARGET_USES_LOGD),false)
